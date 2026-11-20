@@ -1,0 +1,24 @@
+# Configuration for iMac 2011 with replaced hard drive (the HDD sensor is not connected)
+system:
+  applesmc_path: "/sys/devices/platform/applesmc.768"
+  timestep: 3   # Delay between periodic updates of the PID controller and fan speeds
+
+# Configuration of individual PID controllers
+controllers:
+  - sources: ["TG0D", "TG0H", "TG0d", "TG0h", "TG0p"]   # Thermal sensors relevant for the controlled fan
+    target: "ODD"             # Controlled fan
+    pid: [-300.0, -2.0, 0.0]  # PID parameters (should be < 0)
+    working: 65               # Working temperature (in Celsius)
+
+  # The CPU fan cools also the PSU. Since GPU puts a large stress on the PSU, it is wise to keep GPU sensors in the list
+  # of sources.
+  - sources: ["Tp1P", "Tp1p", "Tp2H", "Tp2h", "Tp3H", "Tp3H", "TG0D", "TG0H", "TG0d", "TG0h", "TG0p"]
+    target: "CPU"
+    pid: [-150.0, -2.0, 0.0]
+    working: 65
+    fanmin: 1200
+
+  # If no sources are defined, the fan is set to its maximal speed. In my computer, the HDD was replaced by and SSD
+  # with no thermal sensor. The fan max speed can thus be limited to decrease the noise levels.
+  - target: "HDD"
+    fanmax: 1200

@@ -1,0 +1,15 @@
+[Unit]
+Description=Control Fans (Apple SMC PID fan controller)
+After=sysinit.target
+
+[Service]
+Type=simple
+ExecStartPre=-/usr/sbin/modprobe applesmc
+ExecStart=/usr/local/lib/control_fans/venv/bin/python /usr/local/lib/control_fans/control_fans.py /etc/control_fans/config.yml
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
